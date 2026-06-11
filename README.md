@@ -3,7 +3,7 @@
 Welcome! This repository contains introductory materials, mathematical frameworks, and practical data processing modules designed for laboratory scientists, physicist, chemists, and engineering students.
 
 ## 📋 Table of Contents
-* **[Interactive Presentation Slides](https://llinersy.github.io/machine-learning-tutorial-for-experiments/ml_for_experimentalists.html)** - A conceptual framework translating everyday life examples into mathematical explanations.
+* **[Interactive Presentation Slides](https://llinersy.github.io/machine-learning-tutorial-for-experiments/module1_Intro/ml_for_experimentalists.html)** - A conceptual framework translating everyday life examples into mathematical explanations.
 * **Module 1:** Intro to ML for Experiments, interactive slides.
 * **Module 2:** Data-Processing for Spectroscopy & Signal Filtering
 * **Module 3:** Decoupling High-Dimensional Data Matrices via PCA (Principal Component Analysis) and t-SNE (t-distributed Stochastic Neighbor Embedding)
