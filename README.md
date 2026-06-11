@@ -27,3 +27,6 @@ If you're using Google Colab, you need to mount Google Drive and change your wor
   - !!! DON'T FORGET THE PERCENTAGE SIGN !!!
 * 8 - In order to check the working directory that you are into use
   - %pwd
+
+
+📥 **[Download Module 1: Introduction to Machine Learning (PDF)](https://github.com/llinersy/machine-learning-tutorial-for-experiments/raw/main/module1_Intro/Intro_to_Machine_Learning.pdf)**
