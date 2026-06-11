@@ -1,4 +1,4 @@
-# Machine Learning for Experimental Researchers 🔬🧪
+# Machine Learning for Data Researchers 🔬🧪
 
 Welcome! This repository contains introductory materials, mathematical frameworks, and practical data processing modules designed for laboratory scientists, physicist, chemists, and engineering students.
 
