@@ -26,4 +26,4 @@ If you're using Google Colab, you need to mount Google Drive and change your wor
   - %cd /content/drive/MyDrive/IA-Tutorial-2026 !
   - !!! DON'T FORGET THE PERCENTAGE SIGN !!!
 * 8 - In order to check the working directory that you are into use
- - %pwd
+  - %pwd
