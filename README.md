@@ -23,7 +23,7 @@ If you're using Google Colab, you need to mount Google Drive and change your wor
 * 5 - Select the "Mount Drive" option at the left panel.
 * 6 - Run the Cell to mount drive.
 * 7 - Change directory to the IA-Tutorial-2026 folder with:
-  - %cd /content/drive/MyDrive/DataTrieste !
+  - %cd /content/drive/MyDrive/IA-Tutorial-2026 !
   - !!! DON'T FORGET THE PERCENTAGE SIGN !!!
 * 8 - In order to check the working directory that you are into use
  - %pwd
