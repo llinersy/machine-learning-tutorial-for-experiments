@@ -27,6 +27,48 @@ If you're using Google Colab, you need to mount Google Drive and change your wor
   - !!! DON'T FORGET THE PERCENTAGE SIGN !!!
 * 8 - In order to check the working directory that you are into use
   - %pwd
+ 
+## 🚀 Student Guide: Running Notebooks in Google Colab with Google Drive
+
+Follow these step-by-step instructions to configure your cloud environment, load the course modules, and link your file directories.
+
+---
+
+### Phase 1: Cloud Folder Setup
+
+1. Open your **Google Drive** ([drive.google.com](https://drive.google.com/)).
+2. At the absolute **root** of your Drive (inside `My Drive`), create a new folder named exactly:
+   ```text
+   IA-Tutorial-2026
+⚠️ Note: Do not change the casing or spacing. The computer is case-sensitive!
+3. Download the target Python Notebook file (e.g., module2.ipynb) from this GitHub repository to your local computer.
+4. Drag and drop that downloaded .ipynb notebook file directly into your newly created IA-Tutorial-2026 Google Drive folder.
+
+### Phase 2: Launching the Notebook
+5. Inside your Google Drive folder, right-click on the notebook file (module2.ipynb).
+6. Hover over Open with and select Google Colaboratory.
+
+*💡 Troubleshooting Tip for Students: If you do not see Google Colaboratory in the list, click Connect more apps, search for "Colaboratory", click install/connect, and try right-clicking the file again.*
+
+### Phase 3: Mounting Google Drive & Navigating Path Directories
+Once your notebook initializes in the browser, you must grant it access to read and write data directly from your Google Drive folder.
+7. Look at the left vertical sidebar panel in Colab and click on the Files (Folder icon) tab.
+8. Click the Mount Drive icon (a folder icon overlaid with a Google Drive triangle logo).
+   - Alternatively, you can create a fresh code cell at the absolute top of your notebook and execute this script command:
+     ```from google.colab import drive
+     drive.mount('/content/drive')```
+9. Follow the pop-up permissions prompt window: select your Google account, scroll down, and click Allow.
+
+### Phase 4: Setting the Active Working Environment
+To ensure the notebook can locate your data sets, images, and modules automatically without crashing, you must point Colab directly into your project directory folder.
+10. Create a new code cell, paste the following system line, and execute it:
+```%cd /content/drive/MyDrive/IA-Tutorial-2026```
+*🚨 CRITICAL RULE: Do not forget the percentage sign (%)! This is a special Jupyter magic command that permanently changes the directory pathway. Using a exclamation mark (!cd) will change the path only temporarily for that single line and fail.*
+11. To double-check and verify that your working directory pathway successfully shifted to your folder, create another code cell and type:
+```%pwd```
+*(Print Working Directory). The output displayed directly below the cell should read exactly:*
+```/content/drive/MyDrive/IA-Tutorial-2026```
+
 
 📥 **[Download Module 1: Introduction to Machine Learning (PDF)](https://github.com/llinersy/machine-learning-tutorial-for-experiments/raw/main/module1_Intro/Intro_to_Machine_Learning.pdf)**
 
