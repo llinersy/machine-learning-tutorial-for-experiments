@@ -11,23 +11,6 @@ Welcome! This repository contains introductory materials, mathematical framework
 * **Module 5:** 1D-CNN Signals & 2D-CNN for Spectra Analysis and Micrograph Reticulation Analysis.
 * **Module 6:** Integration Projects. CNN for polymerization analysis. PCA for Environmental Analytics & Microplastics Research. Filters for advanced materials characterization.
 
-## 🚀 How to Run the Notebooks in Google Colab
-**Mount Google Drive**
-
-If you're using Google Colab, you need to mount Google Drive and change your working directory as follows:
-
-* 1 - Create a Google drive folder named "IA-Tutorial-2026" at the root of your drive storage.
-* 2 - Download the Python Notebook (i.e., module2.ipynb) to you computer.
-* 3 - Upload the notebook to the IA-Tutorial-2026 folder.
-* 4 - Open the notebook with right click and then select "Open With" > "Google Colaboratory".
-* 5 - Select the "Mount Drive" option at the left panel.
-* 6 - Run the Cell to mount drive.
-* 7 - Change directory to the IA-Tutorial-2026 folder with:
-  - %cd /content/drive/MyDrive/IA-Tutorial-2026 !
-  - !!! DON'T FORGET THE PERCENTAGE SIGN !!!
-* 8 - In order to check the working directory that you are into use
-  - %pwd
- 
 ## 🚀 Student Guide: Running Notebooks in Google Colab with Google Drive
 
 Follow these step-by-step instructions to configure your cloud environment, load the course modules, and link your file directories.
@@ -39,8 +22,9 @@ Follow these step-by-step instructions to configure your cloud environment, load
 1. Open your **Google Drive** ([drive.google.com](https://drive.google.com/)).
 2. At the absolute **root** of your Drive (inside `My Drive`), create a new folder named exactly:
    ```text
-   IA-Tutorial-2026
-⚠️ Note: Do not change the casing or spacing. The computer is case-sensitive!
+   IA-Tutorial-2026  
+*⚠️ Note: Do not change the casing or spacing. The computer is case-sensitive!*
+
 3. Download the target Python Notebook file (e.g., module2.ipynb) from this GitHub repository to your local computer.
 4. Drag and drop that downloaded .ipynb notebook file directly into your newly created IA-Tutorial-2026 Google Drive folder.
 
