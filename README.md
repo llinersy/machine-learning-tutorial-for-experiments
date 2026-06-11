@@ -28,14 +28,21 @@ If you're using Google Colab, you need to mount Google Drive and change your wor
 * 8 - In order to check the working directory that you are into use
   - %pwd
 
-
 📥 **[Download Module 1: Introduction to Machine Learning (PDF)](https://github.com/llinersy/machine-learning-tutorial-for-experiments/raw/main/module1_Intro/Intro_to_Machine_Learning.pdf)**
+
 📥 **[Download Module 2: Data Processing (PDF)](https://github.com/llinersy/machine-learning-tutorial-for-experiments/raw/main/module2_Data-Processing/module2_explanation/module2_explanation.pdf)**
+
 📥 **[Download Module 3: PCA (PDF)](https://github.com/llinersy/machine-learning-tutorial-for-experiments/raw/main/module3_PCA/module3_explanation/module3_explanation.pdf)**
+
 📥 **[Download Module 4: Morphometry I (PDF)](https://github.com/llinersy/machine-learning-tutorial-for-experiments/raw/main/module4_Morphometry/module4-COFs/module4-COFs_explanation/module4-COFs_explanation.pdf)**
+
 📥 **[Download Module 4: Morphometry II (PDF)](https://github.com/llinersy/machine-learning-tutorial-for-experiments/raw/main/module4_Morphometry/module4-SEM-grains/module4-SEM-grains-explanation/module4-SEM-grains-eplanation.pdf)**
+
 📥 **[Download Module 5: CNN I (PDF)](https://github.com/llinersy/machine-learning-tutorial-for-experiments/raw/main/module5_CNN/module5-1_CNN-spectra/module5-1_explanation/module5-1_explanation.pdf)**
+
 📥 **[Download Module 6: CNN II (PDF)](https://github.com/llinersy/machine-learning-tutorial-for-experiments/raw/main/module5_CNN/module5-CNN-polymerization/module5-CNN-images_explanation/module5-CNN-images_explanation.pdf)**
+
 📥 **[Download Module 6: Environmental Analytics & Microplastics (PDF)](https://github.com/llinersy/machine-learning-tutorial-for-experiments/raw/main/module6_Integration/module6-1/Module6-1_explanation/Module6-2_explanation.pdf)**
+
 📥 **[Download Module 6: Advanced Micrograph Analysis (PDF)](https://github.com/llinersy/machine-learning-tutorial-for-experiments/raw/main/module6_Integration/module6-2/module4-SEM-grains-advanced-explanation/module4-SEM-grains-advanced_explanation.pdf)**
 
