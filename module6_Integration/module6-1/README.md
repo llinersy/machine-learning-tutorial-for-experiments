@@ -1,0 +1,27 @@
+# uFTIR test spectra for known synthetic and natural materials
+
+[https://doi.org/10.5061/dryad.f1vhhmh59](https://doi.org/10.5061/dryad.f1vhhmh59)
+
+## Description of the data and file structure
+
+In this experiment, we prepared 22 pristine sample materials from natural and synthetic sources and measured micro-Fourier transform infrared (µFTIR) spectra in transmission mode for each sample using a Thermo Nicolet iN10 MX instrument. The collected spectra were then input into two spectral library matching systems (Omnic Picta and Open Specy), using a total of five identification routines.  Next, we placed a subset of four pristine microplastic materials in a biologically active river system for two weeks to simulate environmental samples. These simulated environmental samples were processed using 10% hydrogen peroxide for 24 hours to remove organic contamination and then identified using the strongest performing library. Overall, we found that the accuracy of automated library matching in the tested systems and processing routines varied from 64.1 to 98.0% for distinguishing between natural and synthetic materials and that a high Hit Quality Index (HQI) did not always correlate with accuracy. These results are important for the microplastic field, demonstrating a need to rigorously test spectral libraries and processing routines with known materials to ensure identification accuracy.  
+
+#### File: Test\_spectra\_library.zip
+
+**Description:** A database of uFTIR spectra collected from 22 known synthetic and natural materials. Each .csv file contains an individual spectrum with the columns "wavenumber" in units of vibrations per cm (cm-1) and "intensity" as percent absorbance (dimensionless). Refer to Table 1 for a list of materials and their sources. The Spectra were collected using a Nicolet iN10 MX FTIR microscope (Thermo Nicolet Analytical Instruments, Madison, WI) with a liquid nitrogen-cooled mercury cadmium telluride (MCT) detector. Spectra were collected in transmission mode with an aperture size of 100 μm by 100 μm. Each sample point was scanned 8 times with a spectral resolution of 8 cm-1. The wavenumber range of collected spectra was 675-4000 cm-1 and a Beer-Norton apodization filter was used to reduce noise.
+
+#### File: Biofouled\_spectra\_library.zip
+
+**Description:** A database of uFTIR spectra collected from 4 common polymer types after incubation in the Mekong River. Irregular particles of Nylon, Polypropylene, Polystyrene, and Polyvinylchloride were sewn into nylon mesh (100 mm mesh) bags and placed in the Mekong River near the city of Phnom Penh, Cambodia for 15 days. The purpose of this step was to allow the growth of biological materials on the surface of the particles and simulate environmental samples. After 15 days, the mesh bags were placed in a zip-lock bag transport and were refrigerated upon their arrival at the laboratory. The nylon mesh bags were cut open and two subsamples of each polymer type were extracted using a stainless-steel laboratory spatula. The subsamples were placed on 100 μm stainless steel mesh filters. For each of the four polymer types, one subsample was placed in a drying oven at 40°C for 24 hours and the other subsample was kept in refrigeration. Next, the organic particles were removed from both the dry and wet subsamples using hydrogen peroxide (H2O2) wet oxidation. The purpose of creating wet and dry sample storage subsamples was to test how drying the sample before processing changes the effectiveness of H2O2 wet oxidation.
+
+For wet oxidation, the filters were placed inside a filter housing and the sample outlet port was plugged. Next, filtered (0.7 µm glass fiber, GF/F filter) 10% hydrogen peroxide (H2O2) was added to the filter casing using a pipette, and the top of the filter housing was covered with aluminum foil to prevent contamination. After leaving the filter for 24 hours at approximately 23C, the H2O2 was drained through the sample outlet port and the filter was rinsed three times by filling the housing with ultra-pure water and allowing it to drain again. After the final rinse, the filter was removed from the housing and placed in a polystyrene petri dish and then placed in a 40C oven until dry. 
+
+After drying, 30 representative µFTIR spectra were collected from different particles of each material type (Nylon, Polypropylene, Polystyrene, and Polyvinylchloride) and processing method (wet or dry storage) in the same way as the pristine materials. Spectra were atmospherically corrected in Omnic Picta and processed through the Open Specy derivative library for identification. This dataset contains the spectra collected from biofouled samples kept in wet storage (biofouled_wet), biofouled samples kept in dry storage (biofouled_dry), and pristine samples of the four material types.
+
+#### File: OpenSpecy\_raw\_library\_for\_Omnic.zip
+
+**Description:** This is the 2023 OpenSpecy unprocessed (raw) library formatted to work with the Thermo Fisher software "Omnic". This library contains 21547 spectra from both natural and synthetic materials. The library is included to provide an open-source plastics library for Omnic users. Users of other spectroscopy instruments can access the OpenSpecy libraries here: [https://osf.io/3uatf/](https://osf.io/3uatf/).
+
+## Code/software
+
+The spectra included can be viewed and analyzed using a variety of open-source software and packages including OpenSpecy, Spectragryph, ChemoSpec, etc. Each of these software programs provides its own workflow and help files.

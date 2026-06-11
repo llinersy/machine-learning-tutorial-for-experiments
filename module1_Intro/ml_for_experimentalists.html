@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathematics of Machine Learning: An Experimentalist's Guide</title>
+    
+    <!-- Design Fonts & Icon Libraries -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fira+Code:wght@400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Render equations dynamically inside the browser -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-cream: #F4F1EA;
+            --primary-blue: #0A369D;
+            --secondary-green: #118AB2;
+            --accent-orange: #FF823A;
+            --dark-charcoal: #1C1C1C;
+            --muted-gray: #6C757D;
+            --border-light: #E0DCD3;
+            --panel-white: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #121212;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--dark-charcoal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Presentation Workspace Layout */
+        .workspace-wrapper {
+            width: 1280px;
+            height: 800px;
+            background-color: var(--bg-cream);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Navigation Sidebar */
+        .sidebar {
+            width: 280px;
+            background-color: #FAF8F5;
+            border-right: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 30px 20px;
+            z-index: 10;
+        }
+
+        .sidebar-header {
+            margin-bottom: 25px;
+        }
+
+        .sidebar-header h2 {
+            font-family: 'Lora', serif;
+            font-size: 20px;
+            color: var(--primary-blue);
+            font-weight: 700;
+        }
+
+        .sidebar-header p {
+            font-size: 11px;
+            color: var(--muted-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .slide-list {
+            list-style: none;
+            overflow-y: auto;
+            flex-grow: 1;
+            margin-bottom: 20px;
+            padding-right: 5px;
+        }
+
+        .slide-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .slide-list::-webkit-scrollbar-thumb {
+            background-color: var(--border-light);
+            border-radius: 2px;
+        }
+
+        .slide-item {
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--muted-gray);
+            transition: all 0.2s ease;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .slide-item:hover {
+            background-color: rgba(10, 54, 157, 0.05);
+            color: var(--primary-blue);
+        }
+
+        .slide-item.active {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid var(--border-light);
+            padding-top: 15px;
+            font-size: 11px;
+            color: var(--muted-gray);
+        }
+
+        /* Slides Display Window */
+        .viewport {
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 50px 60px;
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Standardized Header Elements */
+        .slide-header {
+            margin-bottom: 30px;
+            border-left: 6px solid var(--accent-orange);
+            padding-left: 20px;
+        }
+
+        .slide-header h3 {
+            font-family: 'Lora', serif;
+            font-size: 38px;
+            color: var(--primary-blue);
+            font-weight: 700;
+        }
+
+        .slide-header p {
+            font-size: 16px;
+            color: var(--muted-gray);
+            margin-top: 4px;
+        }
+
+        /* Slide Structural Layouts */
+        .grid-split {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 40px;
+            flex-grow: 1;
+            align-items: start;
+        }
+
+        .panel {
+            background: var(--panel-white);
+            border-radius: 14px;
+            border: 1px solid var(--border-light);
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--bg-cream);
+            padding-bottom: 10px;
+        }
+
+        .panel-title i {
+            color: var(--accent-orange);
+        }
+
+        /* Typography & Custom Lists inside panels */
+        p.desc {
+            font-size: 15.5px;
+            line-height: 1.6;
+            color: var(--dark-charcoal);
+            margin-bottom: 15px;
+        }
+
+        ul.points-list {
+            list-style: none;
+        }
+
+        ul.points-list li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 12px;
+            font-size: 14.5px;
+            line-height: 1.5;
+            color: var(--dark-charcoal);
+        }
+
+        ul.points-list li::before {
+            content: "\f058";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 2px;
+            color: var(--secondary-green);
+            font-size: 15px;
+        }
+
+        /* Math Block Formatting */
+        .math-block {
+            background-color: var(--bg-cream);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 13.5px;
+            border-left: 4px solid var(--primary-blue);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-x: auto;
+        }
+
+        .math-block-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--primary-blue);
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        /* Interactive Simulator Panel Elements */
+        .simulator-canvas-box {
+            width: 100%;
+            height: 250px;
+            background-color: #fafbf9;
+            border-radius: 8px;
+            border: 1px dashed var(--border-light);
+            position: relative;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .sim-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .slider-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .slider-group label {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--dark-charcoal);
+            flex-shrink: 0;
+            width: 140px;
+        }
+
+        .slider-group input[type="range"] {
+            flex-grow: 1;
+            accent-color: var(--accent-orange);
+            cursor: pointer;
+        }
+
+        .slider-val {
+            font-family: 'Fira Code', monospace;
+            font-size: 12.5px;
+            font-weight: bold;
+            color: var(--primary-blue);
+            width: 45px;
+            text-align: right;
+        }
+
+        /* Floating controllers */
+        .nav-controls {
+            position: absolute;
+            bottom: 40px;
+            right: 60px;
+            display: flex;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .btn {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(10, 54, 157, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            background-color: #0c43c4;
+            box-shadow: 0 6px 15px rgba(10, 54, 157, 0.35);
+        }
+
+        .btn:disabled {
+            background-color: var(--border-light);
+            color: var(--muted-gray);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary-blue);
+            border: 1px solid var(--primary-blue);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(10, 54, 157, 0.05);
+            box-shadow: none;
+            transform: translateY(-2px);
+        }
+
+        /* Cover Slide Layout styling */
+        .cover-layout {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+        }
+
+        .cover-badge {
+            background-color: rgba(255, 130, 58, 0.15);
+            color: var(--accent-orange);
+            font-weight: 700;
+            font-size: 12px;
+            padding: 6px 16px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 20px;
+        }
+
+        .cover-layout h1 {
+            font-family: 'Lora', serif;
+            font-size: 52px;
+            color: var(--primary-blue);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 15px;
+        }
+
+        .cover-layout .lead-desc {
+            font-size: 18px;
+            color: var(--muted-gray);
+            max-width: 720px;
+            line-height: 1.6;
+            margin-bottom: 35px;
+        }
+
+        .cover-meta {
+            display: flex;
+            gap: 40px;
+            border-top: 1px solid var(--border-light);
+            padding-top: 25px;
+            margin-top: 15px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .meta-item .meta-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--muted-gray);
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .meta-item .meta-val {
+            font-size: 14.5px;
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+
+        /* SVG Graph Styling */
+        svg.graph {
+            width: 100%;
+            height: 100%;
+        }
+
+        .grid-lines line {
+            stroke: #EAEAEA;
+            stroke-width: 1px;
+        }
+
+        .axis-line {
+            stroke: var(--dark-charcoal);
+            stroke-width: 1.5px;
+        }
+
+        .data-curve {
+            fill: none;
+            stroke: var(--primary-blue);
+            stroke-width: 3px;
+        }
+
+        .gradient-vector {
+            stroke: var(--accent-orange);
+            stroke-width: 2.5px;
+            marker-end: url(#arrow);
+        }
+
+        .shadow-axis {
+            stroke: var(--muted-gray);
+            stroke-width: 1.5px;
+            stroke-dasharray: 4,4;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="workspace-wrapper">
+        
+        <!-- Interactive Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>AI & ML Handbook</h2>
+                <p>The Math Behind the Magic</p>
+            </div>
+            
+            <ul class="slide-list" id="slideList">
+                <li class="slide-item active" data-index="0"><i class="fa-solid fa-graduation-cap"></i> 0. Workshop Introduction</li>
+                <li class="slide-item" data-index="1"><i class="fa-solid fa-code-compare"></i> 1. The Paradigm Shift</li>
+                <li class="slide-item" data-index="2"><i class="fa-solid fa-chart-line"></i> 2. Regression & Fittings</li>
+                <li class="slide-item" data-index="3"><i class="fa-solid fa-network-wired"></i> 3. PCA Suitcase Projection</li>
+                <li class="slide-item" data-index="4"><i class="fa-solid fa-globe"></i> 4. t-SNE Local Proximity</li>
+                <li class="slide-item" data-index="5"><i class="fa-solid fa-compress"></i> 5. K-Means Centroid Force</li>
+                <li class="slide-item" data-index="6"><i class="fa-solid fa-eye"></i> 6. CNN Spatial Filter</li>
+                <li class="slide-item" data-index="7"><i class="fa-solid fa-wand-magic-sparkles"></i> 7. Saliency Maps</li>
+                <li class="slide-item" data-index="8"><i class="fa-solid fa-square-poll-vertical"></i> 8. Final Interactive Labs</li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <p>Designed for Experimentalists</p>
+                <p style="margin-top: 3px; font-weight: bold; color: var(--primary-blue);">Modules 1-6 Combined</p>
+            </div>
+        </div>
+        
+        <!-- Viewport Window containing Slides -->
+        <div class="viewport">
+            
+            <!-- Slide 0: Cover/Title -->
+            <div class="slide active" id="slide-0">
+                <div class="cover-layout">
+                    <span class="cover-badge">Materials & Chemistry Focus</span>
+                    <h1>Machine Learning<br>& Data Science for Experimentalists</h1>
+                    <p class="lead-desc" style="font-weight: bold; color: #0A369D; margin-bottom: 10px;">
+                    Presented by: Dr. Llinersy Uranga-Pina (LPPI-CYU)
+                    </p>
+                    <p class="lead-desc">An intuitive introduction to ML algorithms, deep neural network systems, and advanced chemometrics, translating everyday life analogies into direct physical mathematical explanations.</p>
+                    
+                    <div class="cover-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Math Level</span>
+                            <span class="meta-val">Intuitive, Graphic-Based</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Applications</span>
+                            <span class="meta-val">Spectroscopy, SEM, TEM</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Target Audience</span>
+                            <span class="meta-val">Researchers & PhD Students</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-footer">
+                    <p>LIRA-LPPI-Workshop IA-Tutorial, June 2026</p>
+                    <p style="margin-top: 3px; font-weight: bold; color: var(--primary-blue);">Llinersy Uranga, LPPI-CYU</p>
+                </div>
+            </div>
+            
+            <!-- Slide 1: Paradigm Shift -->
+            <div class="slide" id="slide-1">
+                <div class="slide-header">
+                    <h3>The Modeling Paradigm Shift</h3>
+                    <p>Traditional Programming vs. Data-Driven Exploration</p>
+                </div>
+                <div class="grid-split">
+                    <div class="panel">
+                        <div class="panel-title"><i class="fa-solid fa-utensils"></i> Everyday Analogy: Soup & The Chef</div>
+                        <p class="desc"><strong>Traditional Programming</strong> is like following a rigid, step-by-step recipe from a cookbook. If you have the exact instructions, you get a predictable soup.</p>
+                        <p class="desc"><strong>Machine Learning</strong> is like a master chef reverse-engineering a recipe by tasting 1,000 different soup bowls from various restaurants, establishing deep intuition on what creates the taste.</p>
+                        <ul class="points-list">
+                            <li>Traditional: You supply the inputs and the explicit equations ($f(x)$) to output a prediction ($y$).</li>
+                            <li>Machine Learning: You supply the inputs and the target answers. The machine computes the function parameters ($f(x; \mathbf{w})$).</li>
+                        </ul>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-title"><i class="fa-solid fa-brain"></i> Mathematical Rigor: Function Approximations</div>
+                        <p class="desc">We assume there is a true, hidden physical mapping $y = f(x)$. Machine Learning constructs a highly parameterized mathematical proxy $f(x; \mathbf{W})$ where $\mathbf{W}$ is the weights tensor.</p>
+                        <div class="math-block">
+                            <span class="math-block-title">Empirical Risk Minimization (ERM)</span>
+                            $$\min_{\mathbf{W}} R(\mathbf{W}) = \frac{1}{N} \sum_{i=1}^{N} \mathcal{L}\big(f(x_i; \mathbf{W}), y_i\big)$$
+                        </div>
+                        <p class="desc">We adjust the weights $\mathbf{W}$ to minimize the loss function $\mathcal{L}$ (like a <strong>Least-Squares Fitting</strong>), forcing the model's predictions to match experimental physical reality across $N$ samples.</p>
+                    </div>
+                </div>
+                <div class="sidebar-footer">
+                    <p>LIRA-LPPI-Workshop IA-Tutorial, June 2026</p>
+                    <p style="margin-top: 3px; font-weight: bold; color: var(--primary-blue);">Llinersy Uranga, LPPI-CYU</p>
+                </div>
+            </div>
+            
+            <!-- Slide 2: Non-Linear Fitting / Optimizer -->
+            <div class="slide" id="slide-2">
+                <div class="slide-header">
+                    <h3>Regression as Non-Linear Dimensional Fittings</h3>
+                    <p>How models navigate optimization spaces to find structural weights</p>
+                </div>
+                <div class="grid-split">
+                    <div class="panel">
+                        <div class="panel-title"><i class="fa-solid fa-mountain"></i> Analogy: Rolling down a Hilly Valley</div>
+                        <p class="desc">Searching for the best fit parameters is like walking blindly down a foggy valley at night. You can't see the lowest point, but you can feel the slope under your feet.</p>
+                        <p class="desc">By stepping in the direction of steepest descent, you will eventually find the valley floor (global cost minimum).</p>
+                        <div class="math-block">
+                            <span class="math-block-title">Gradient Descent Equation</span>
+                            $$\mathbf{w}_{k+1} = \mathbf{w}_k - \eta \nabla \mathcal{L}(\mathbf{w}_k)$$
+                        </div>
+                        <p class="desc">Here, $\eta$ is the learning rate (step size), and $\nabla\mathcal{L}(\mathbf{w}_k)$ is the local vector gradient slope of the loss landscape.</p>
+                    </div>
+                    
+                    <!-- Live Interactivity Demo for Gradient Descent -->
+                    <div class="panel">
+                        <div class="panel-title"><i class="fa-solid fa-gamepad"></i> Interactive Optimizer Demonstration</div>
+                        <div class="simulator-canvas-box" id="descentSimContainer">
+                            <canvas id="descentCanvas" width="400" height="250" style="width:100%; height:100%;"></canvas>
+                        </div>
+                        <div class="sim-controls">
+                            <div class="slider-group">
+                                <label for="learningRate">Learning Rate ($\eta$):</label>
+                                <input type="range" id="learningRate" min="0.01" max="0.3" step="0.01" value="0.08">
+                                <span class="slider-val" id="lrVal">0.08</span>
+                            </div>
+                            <button class="btn btn-secondary" id="resetDescentBtn" style="align-self: flex-start; padding: 6px 14px; font-size: 11px;"><i class="fa-solid fa-redo"></i> Restart Optimizer Path</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-footer">
+                    <p>LIRA-LPPI-Workshop IA-Tutorial, June 2026</p>
+                    <p style="margin-top: 3px; font-weight: bold; color: var(--primary-blue);">Llinersy Uranga, LPPI-CYU</p>
+                </div>
+            </div>
+            
+            <!-- Slide 3: PCA Suitcase Projection -->
+            <div class="slide" id="slide-3">
+                <div class="slide-header">
+                    <h3>Dimensionality Reduction: PCA Projection</h3>
+                    <p>Packing 500 spectral features into a 2D suitcase space</p>
+                </div>
+                <div class="grid-split">
+                    <div class="panel">
+                        <div class="panel-title"><i class="fa-solid fa-box-open"></i> Analogy: Hand Shadow Puppets</div>
+                        <p class="desc">Imagine a 3D hand puppet. By shining light at a specific angle, you can project a clean 2D shadow onto the wall that clearly shows the shape.</p>
+                        <p class="desc">If you choose a bad projection angle, you lose all detail and get an uninformative blob. <strong>PCA</strong> is the mathematics of finding the absolute best angle to preserve structure.</p>
+                        <ul class="points-list">
+                            <li>Calculates the covariance matrix $\mathbf{C}$ to find direction correlations.</li>
+                            <li>PC1 matches the direction of maximum variance.</li>
+                        </ul>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-title"><i class="fa-solid fa-gears"></i> Rigor: Eigenvalue Decomposition</div>
+                        <p class="desc">We take the multi-dimensional dataset matrix $\mathbf{X}$ and compute eigenvectors of the covariance matrix $\mathbf{C}$:</p>
+                        <div class="math-block">
+                            <span class="math-block-title">Eigenvector Characteristic Equation</span>
+                            $$\mathbf{C} \mathbf{v}_i = \lambda_i \mathbf{v}_i$$
+                        </div>
+                        <p class="desc">Here, $\lambda_i$ is the eigenvalue (which quantifies variance) and $\mathbf{v}_i$ is the corresponding principal axis vector. PCs are chosen to capture the largest variance.</p>
+                        
+                        <!-- Interactive PCA Line Rotator -->
+                        <div class="simulator-canvas-box" id="pcaSimContainer" style="height: 180px; margin-top: 10px;">
+                            <canvas id="pcaCanvas" width="400" height="180" style="width:100%; height:100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-footer">
+                    <p>LIRA-LPPI-Workshop IA-Tutorial, June 2026</p>
+                    <p style="margin-top: 3px; font-weight: bold; color: var(--primary-blue);">Llinersy Uranga, LPPI-CYU</p>
+                </div>
+            </div>
+            
+            <!-- Slide 4: t-SNE Neighborhoods -->
+            <div class="slide" id="slide-4">
+                <div class="slide-header">
+                    <h3>Non-Linear Proximity: t-SNE Mapping</h3>
+                    <p>Preserving local similarity over global projections</p>
+                </div>
+                <div class="grid-split">
+                    <div class="panel">
+                        <div class="panel-title"><i class="fa-solid fa-map-location-dot"></i> Analogy: Flat Map of the Round Globe</div>
+                        <p class="desc">You cannot flatten a 3D Earth globe onto a 2D paper map without stretching or distorting something. Some cities will be separated artificially.</p>
+                        <p class="desc">While PCA tries to keep the broad, global structure correct, <strong>t-SNE</strong> is like a localized neighborhood map. It focuses on keeping actual spatial neighbors close together, pulling samples into tight, isolated "islands".</p>
+                        <ul class="points-list">
+                            <li>Outstanding for resolving geographic origin clusters.</li>
+                            <li>Tuned by the <em>perplexity</em> variable (expected neighbor size).</li>
+                        </ul>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-title"><i class="fa-solid fa-calculator"></i> Rigor: Similarity Probability Spaces</div>
+                        <p class="desc">For any two high-dimensional sample vectors $\mathbf{x}_i, \mathbf{x}_j$, the probability $p_{j|i}$ that they are close neighbors is calculated as:</p>
+                        <div class="math-block">
+                            <span class="math-block-title">High-Dimensional Similarity Equation</span>
+                            $$p_{j|i} = \frac{\exp\left(-\frac{\|\mathbf{x}_i - \mathbf{x}_j\|^2}{2\sigma_i^2}\right)}{\sum_{k \neq i} \exp\left(-\frac{\|\mathbf{x}_i - \mathbf{x}_k\|^2}{2\sigma_i^2}\right)}$$
+                        </div>
+                        <p class="desc">In the low-dimensional 2D layout, we match this neighborhood relationship using a Student-t distribution ($q_{ij}$), minimizing the Kullback-Leibler (KL) divergence between probability spaces.</p>
+                    </div>
+                </div>
+                <div class="sidebar-footer">
+                    <p>LIRA-LPPI-Workshop IA-Tutorial, June 2026</p>
+                    <p style="margin-top: 3px; font-weight: bold; color: var(--primary-blue);">Llinersy Uranga, LPPI-CYU</p>
+                </div>
+            </div>
+            
+            <!-- Slide 5: K-Means Centroid Force -->
+            <div class="slide" id="slide-5">
+                <div class="slide-header">
+                    <h3>Unsupervised Discovery: K-Means</h3>
+                    <p>How centroids use mathematical force fields to group unknown matrices</p>
+                </div>
+                <div class="grid-split">
+                    <div class="panel">
+                        <div class="panel-title"><i class="fa-solid fa-magnet"></i> Analogy: Spices & Magnets</div>
+                        <p class="desc">Imagine scattering a random mix of metal beads on a table. If you drop three magnets, they will pull nearby beads toward themselves, forming three distinct piles.</p>
+                        <p class="desc">If you move the magnets to the centers of their respective piles, the beads reshuffle. By repeating this process, the magnets find the true, physical center of each group. This is the essence of **K-Means clustering**.</p>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-title"><i class="fa-solid fa-code"></i> Rigor: Least-Squares Partition Optimizations</div>
+                        <p class="desc">The algorithm groups $N$ datasets into $K$ clusters by finding centroid positions $\boldsymbol{\mu}_i$ that minimize the sum of squared internal Euclidean distances:</p>
+                        <div class="math-block">
+                            <span class="math-block-title">K-Means Minimization Objective</span>
+                            $$\arg\min_{\mathbf{S}} \sum_{i=1}^{K} \sum_{\mathbf{x} \in S_i} \|\mathbf{x} - \boldsymbol{\mu}_i\|^2$$
+                        </div>
+                        <p class="desc">Over-segmenting the dataset by choosing an unphysical cluster count ($K$) cuts the unified chemical clusters into arbitrary fractions.</p>
+                    </div>
+                </div>
+                <div class="sidebar-footer">
+                    <p>LIRA-LPPI-Workshop IA-Tutorial, June 2026</p>
+                    <p style="margin-top: 3px; font-weight: bold; color: var(--primary-blue);">Llinersy Uranga, LPPI-CYU</p>
+                </div>
+            </div>
+            
+            <!-- Slide 6: CNN Spatial Filters -->
+            <div class="slide" id="slide-6">
+                <div class="slide-header">
+                    <h3>Deep Learning: CNN Spatial Convolutions</h3>
+                    <p>How artificial neural layers parse experimental imagery</p>
+                </div>
+                <div class="grid-split">
+                    <div class="panel">
+                        <div class="panel-title"><i class="fa-solid fa-border-all"></i> Analogy: The Stencil Window</div>
+                        <p class="desc">Imagine holding a cardboard sheet with a small, cut-out window (a <strong>Stencil</strong>) and sliding it across a painting.</p>
+                        <p class="desc">By observing only small, local regions at a time, you can easily trace fine edges, curves, and corners without getting distracted by the entire image. In deep learning, this sliding window is called a **Kernel**.</p>
+                        <ul class="points-list">
+                            <li>Automatically extracts geometric features.</li>
+                            <li>Translates structural images into robust numerical data.</li>
+                        </ul>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-title"><i class="fa-solid fa-square-root-variable"></i> Rigor: 2D Matrix Filtering Discrete Calculus</div>
+                        <p class="desc">The sliding kernel mathematically computes a localized dot product at each coordinate $(x,y)$:</p>
+                        <div class="math-block">
+                            <span class="math-block-title">2D Discrete Convolution Operation</span>
+                            $$O(x,y) = \sum_{m=-1}^{1} \sum_{n=-1}^{1} I(x+m, y+n) \cdot K(m,n) + b$$
+                        </div>
+                        <p class="desc">The input intensity values $I$ are multiplied by the kernel weights $K$, automatically highlighting physical transitions like edges or junctions.</p>
+                    </div>
+                </div>
+                <div class="sidebar-footer">
+                    <p>LIRA-LPPI-Workshop IA-Tutorial, June 2026</p>
+                    <p style="margin-top: 3px; font-weight: bold; color: var(--primary-blue);">Llinersy Uranga, LPPI-CYU</p>
+                </div>
+            </div>
+            
+            <!-- Slide 7: Saliency Mapping XAI -->
+            <div class="slide" id="slide-7">
+                <div class="slide-header">
+                    <h3>Explainable AI: Saliency Mapping</h3>
+                    <p>Unlocking the black box to identify critical chemical wavenumbers</p>
+                </div>
+                <div class="grid-split">
+                    <div class="panel">
+                        <div class="panel-title"><i class="fa-solid fa-magnifying-glass-chart"></i> Analogy: The Soup Critic</div>
+                        <p class="desc">Imagine tasting a soup and immediately recognizing that it's spoiled. How do you prove why? You don't just say "it's bad"---you point to the exact off-flavor ingredient (e.g., sour milk).</p>
+                        <p class="desc">An **AI Saliency Map** acts as our digital critic. Instead of just outputting a classification label, it highlights the exact pixels or wavenumbers that drove its decision.</p>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-title"><i class="fa-solid fa-chart-column"></i> Rigor: Backpropagated Partial Derivatives</div>
+                        <p class="desc">To find out which variables the network is most sensitive to, we calculate the mathematical derivative of the output prediction score $S_c$ relative to the input features $x_i$:</p>
+                        <div class="math-block">
+                            <span class="math-block-title">Wavelength Sensitivity Gradient</span>
+                            $$G_i = \left| \frac{\partial S_c(\mathbf{X})}{\partial x_i} \right|$$
+                        </div>
+                        <p class="desc">A steep local gradient means that a tiny change in that specific wavenumber's intensity strongly alters the final prediction, proving the network is focusing there.</p>
+                    </div>
+                </div>
+                <div class="sidebar-footer">
+                    <p>LIRA-LPPI-Workshop IA-Tutorial, June 2026</p>
+                    <p style="margin-top: 3px; font-weight: bold; color: var(--primary-blue);">Llinersy Uranga, LPPI-CYU</p>
+                </div>
+            </div>
+            
+            <!-- Slide 8: Interactive Final Labs Summary -->
+            <div class="slide" id="slide-8">
+                <div class="slide-header">
+                    <h3>Summary & Next Steps</h3>
+                    <p>Putting these tools to work in your laboratory workflow</p>
+                </div>
+                <div class="grid-split">
+                    <div class="panel">
+                        <div class="panel-title"><i class="fa-solid fa-vials"></i> Unlocking New Capabilities</div>
+                        <p class="desc">Congratulations on completing this conceptual and mathematical overview of advanced data processing.</p>
+                        <p class="desc">With these tools, you can automate feature measurement, find hidden structural trends, and trace the physical features behind AI predictions.</p>
+                        <ul class="points-list" style="margin-top: 15px;">
+                            <li>Dimensionality Reduction: Compressing complex datasets.</li>
+                            <li>Morphological Segmentation: Automated feature extraction.</li>
+                            <li>Deep Learning & XAI: Understanding the "why" behind the AI.</li>
+                        </ul>
+                    </div>
+                    <div class="panel" style="justify-content: center; align-items: center; text-align: center;">
+                        <div style="font-size: 80px; color: var(--primary-blue); margin-bottom: 20px;">
+                            <i class="fa-solid fa-laptop-code"></i>
+                        </div>
+                        <h3>Explore the Code!</h3>
+                        <p class="desc" style="max-width: 320px; margin: 0 auto 25px;">Open the accompanying notebooks to run these algorithms on your own research data.</p>
+                        <a href="https://github.com" target="_blank" class="btn"><i class="fa-brands fa-github"></i> Launch Research Notebooks</a>
+                    </div>
+                </div>
+                <div class="sidebar-footer">
+                    <p>LIRA-LPPI-Workshop IA-Tutorial, June 2026</p>
+                    <p style="margin-top: 3px; font-weight: bold; color: var(--primary-blue);">Llinersy Uranga, LPPI-CYU</p>
+                </div>
+            </div>
+            
+            <!-- Navigation buttons -->
+            <div class="nav-controls">
+                <button class="btn btn-secondary" id="prevBtn" disabled><i class="fa-solid fa-chevron-left"></i> Previous Slide</button>
+                <button class="btn" id="nextBtn">Next Slide <i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Live Interactivity Script Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Slider elements
+            const slideItems = document.querySelectorAll('.slide-item');
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            let currentIdx = 0;
+
+            function updateSlides(targetIdx) {
+                if (targetIdx < 0 || targetIdx >= slides.length) return;
+                
+                // Toggle slide visibility
+                slides[currentIdx].classList.remove('active');
+                slideItems[currentIdx].classList.remove('active');
+                
+                currentIdx = targetIdx;
+                
+                slides[currentIdx].classList.add('active');
+                slideItems[currentIdx].classList.add('active');
+
+                // Trigger MathJax render for the newly activated slide
+                if (window.MathJax) {
+                    MathJax.typesetPromise([slides[currentIdx]]);
+                }
+
+                // Handle button states
+                prevBtn.disabled = (currentIdx === 0);
+                if (currentIdx === slides.length - 1) {
+                    nextBtn.innerHTML = `Finish <i class="fa-solid fa-check-double"></i>`;
+                } else {
+                    nextBtn.innerHTML = `Next Slide <i class="fa-solid fa-chevron-right"></i>`;
+                }
+                
+                // Re-initialize specific animations or simulations if on respective slide
+                if (currentIdx === 2) {
+                    initGradientDescentSim();
+                } else if (currentIdx === 3) {
+                    initPcaSim();
+                }
+            }
+
+            // Keyboard and sidebar event listeners
+            slideItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const idx = parseInt(this.getAttribute('data-index'));
+                    updateSlides(idx);
+                });
+            });
+
+            prevBtn.addEventListener('click', () => updateSlides(currentIdx - 1));
+            nextBtn.addEventListener('click', () => {
+                if (currentIdx === slides.length - 1) {
+                    alert("Awesome job! You've navigated through the entire handbook workspace.");
+                } else {
+                    updateSlides(currentIdx + 1);
+                }
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowRight' || e.key === 'Space') {
+                    e.preventDefault();
+                    nextBtn.click();
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    prevBtn.click();
+                }
+            });
+
+            // ==================================================================
+            // SIMULATOR 1: Gradient Descent (Optimizer Path Tracking)
+            // ==================================================================
+            let descentAnimId = null;
+            function initGradientDescentSim() {
+                if (descentAnimId) cancelAnimationFrame(descentAnimId);
+                
+                const canvas = document.getElementById('descentCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                
+                const lrSlider = document.getElementById('learningRate');
+                const lrValLabel = document.getElementById('lrVal');
+                const resetBtn = document.getElementById('resetDescentBtn');
+                
+                let lr = parseFloat(lrSlider.value);
+                let x = -2.6; // Starting optimization coordinates
+                
+                lrSlider.oninput = function() {
+                    lr = parseFloat(this.value);
+                    lrValLabel.innerText = lr.toFixed(2);
+                };
+
+                resetBtn.onclick = function() {
+                    x = -2.6;
+                };
+
+                // The mathematical cost function landscape: y = x^2 + 4*sin(2x)
+                function f(xVal) {
+                    return xVal * xVal + 4 * Math.sin(2 * xVal);
+                }
+                function fPrime(xVal) {
+                    return 2 * xVal + 8 * Math.cos(2 * xVal);
+                }
+
+                function draw() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Coordinates mapping transform helpers
+                    function toPixel(ax, ay) {
+                        const px = (ax + 4) * (canvas.width / 8);
+                        const py = canvas.height - 20 - (ay + 4) * (canvas.height / 18);
+                        return { x: px, y: py };
+                    }
+
+                    // 1. Draw helper grids
+                    ctx.strokeStyle = '#F0EDE6';
+                    ctx.lineWidth = 1;
+                    for (let gridX = -4; gridX <= 4; gridX += 1) {
+                        const start = toPixel(gridX, -4);
+                        const end = toPixel(gridX, 14);
+                        ctx.beginPath(); ctx.moveTo(start.x, start.y); ctx.lineTo(end.x, end.y); ctx.stroke();
+                    }
+                    for (let gridY = -4; gridY <= 14; gridY += 2) {
+                        const start = toPixel(-4, gridY);
+                        const end = toPixel(4, gridY);
+                        ctx.beginPath(); ctx.moveTo(start.x, start.y); ctx.lineTo(end.x, end.y); ctx.stroke();
+                    }
+
+                    // 2. Draw the continuous cost function curve
+                    ctx.beginPath();
+                    ctx.strokeStyle = '#0A369D';
+                    ctx.lineWidth = 3;
+                    for (let t = -3.5; t <= 3.5; t += 0.05) {
+                        const pt = toPixel(t, f(t));
+                        if (t === -3.5) ctx.moveTo(pt.x, pt.y);
+                        else ctx.lineTo(pt.x, pt.y);
+                    }
+                    ctx.stroke();
+
+                    // 3. Update optimizer step location using gradient descent
+                    const grad = fPrime(x);
+                    x = x - lr * grad;
+                    // Restrict bounds
+                    if (x < -3.5) x = -3.5;
+                    if (x > 3.5) x = 3.5;
+
+                    const currPt = toPixel(x, f(x));
+
+                    // 4. Draw the gradient direction slope vector
+                    const tangentX1 = x - 0.5;
+                    const tangentY1 = f(x) - 0.5 * grad;
+                    const tangentX2 = x + 0.5;
+                    const tangentY2 = f(x) + 0.5 * grad;
+                    
+                    const tanPt1 = toPixel(tangentX1, tangentY1);
+                    const tanPt2 = toPixel(tangentX2, tangentY2);
+                    
+                    ctx.beginPath();
+                    ctx.strokeStyle = '#FF823A';
+                    ctx.lineWidth = 2;
+                    ctx.moveTo(tanPt1.x, tanPt1.y);
+                    ctx.lineTo(tanPt2.x, tanPt2.y);
+                    ctx.stroke();
+
+                    // 5. Highlight current position
+                    ctx.beginPath();
+                    ctx.arc(currPt.x, currPt.y, 8, 0, 2 * Math.PI);
+                    ctx.fillStyle = '#118AB2';
+                    ctx.fill();
+                    ctx.strokeStyle = '#FFFFFF';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    // 6. Draw labels
+                    ctx.fillStyle = '#1C1C1C';
+                    ctx.font = 'bold 12px sans-serif';
+                    ctx.fillText("Model Weights space (w)", canvas.width - 150, canvas.height - 8);
+                    ctx.save();
+                    ctx.translate(15, 80);
+                    ctx.rotate(-Math.PI / 2);
+                    ctx.fillText("Loss Value L(w)", 0, 0);
+                    ctx.restore();
+
+                    descentAnimId = requestAnimationFrame(draw);
+                }
+                draw();
+            }
+
+            // ==================================================================
+            // SIMULATOR 2: PCA Rotation (Variance Optimization visualization)
+            // ==================================================================
+            let pcaAnimId = null;
+            function initPcaSim() {
+                if (pcaAnimId) cancelAnimationFrame(pcaAnimId);
+                const canvas = document.getElementById('pcaCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+
+                let angle = 0;
+
+                // Create a static point cloud along a preferred axis to demonstrate correlation
+                const points = [];
+                const numPoints = 60;
+                const seed = 42;
+                function randomPseudo(seedVal) {
+                    let s = Math.sin(seedVal) * 10000;
+                    return s - Math.floor(s);
+                }
+                for (let i = 0; i < numPoints; i++) {
+                    const xProj = (randomPseudo(i * 3) - 0.5) * 200;
+                    const yNoise = (randomPseudo(i * 7) - 0.5) * 50;
+                    // Rotate the synthetic cloud by 30 degrees to create a clear principal axis
+                    const rotAngle = Math.PI / 6;
+                    const rx = xProj * Math.cos(rotAngle) - yNoise * Math.sin(rotAngle);
+                    const ry = xProj * Math.sin(rotAngle) + yNoise * Math.cos(rotAngle);
+                    points.push({ x: rx, y: ry });
+                }
+
+                function draw() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    const cx = canvas.width / 2;
+                    const cy = canvas.height / 2;
+
+                    // Update rotation angle slowly
+                    angle += 0.005;
+                    const cosA = Math.cos(angle);
+                    const sinA = Math.sin(angle);
+
+                    // 1. Draw projection axis line
+                    ctx.beginPath();
+                    ctx.strokeStyle = '#FF823A';
+                    ctx.lineWidth = 2.5;
+                    ctx.moveTo(cx - 180 * cosA, cy - 180 * sinA);
+                    ctx.lineTo(cx + 180 * cosA, cy + 180 * sinA);
+                    ctx.stroke();
+
+                    // 2. Draw points and their orthogonal shadow projections onto the axis
+                    let sumOfSquares = 0;
+                    points.forEach(pt => {
+                        // Project the point onto the unit axis vector (cosA, sinA)
+                        const projectionLength = pt.x * cosA + pt.y * sinA;
+                        const projX = projectionLength * cosA;
+                        const projY = projectionLength * sinA;
+
+                        sumOfSquares += projectionLength * projectionLength;
+
+                        // Draw thin connector/projection shadow line
+                        ctx.beginPath();
+                        ctx.strokeStyle = 'rgba(108, 117, 125, 0.25)';
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(cx + pt.x, cy + pt.y);
+                        ctx.lineTo(cx + projX, cy + projY);
+                        ctx.stroke();
+
+                        // Draw shadow coordinate marker on the axis
+                        ctx.beginPath();
+                        ctx.arc(cx + projX, cy + projY, 2.5, 0, 2 * Math.PI);
+                        ctx.fillStyle = '#118AB2';
+                        ctx.fill();
+
+                        // Draw raw scatter coordinates
+                        ctx.beginPath();
+                        ctx.arc(cx + pt.x, cy + pt.y, 4, 0, 2 * Math.PI);
+                        ctx.fillStyle = '#0A369D';
+                        ctx.fill();
+                    });
+
+                    // 3. Print variance calculation output in real time
+                    const varianceNorm = (sumOfSquares / (points.length * 2000)).toFixed(2);
+                    ctx.fillStyle = '#1C1C1C';
+                    ctx.font = 'bold 11px monospace';
+                    ctx.fillText(`CURRENT AXIS VARIANCE: ${varianceNorm} a.u.`, 20, 25);
+                    
+                    ctx.font = 'italic 10px sans-serif';
+                    ctx.fillText("Variance peaks when the red line aligns with the main data stretch.", 20, 42);
+
+                    pcaAnimId = requestAnimationFrame(draw);
+                }
+                draw();
+            }
+        });
+    </script>
+</body>
+</html>
