@@ -36,22 +36,26 @@ Follow these step-by-step instructions to configure your cloud environment, load
 
 ### Phase 3: Mounting Google Drive & Navigating Path Directories
 Once your notebook initializes in the browser, you must grant it access to read and write data directly from your Google Drive folder.
+
 7. Look at the left vertical sidebar panel in Colab and click on the Files (Folder icon) tab.
 8. Click the Mount Drive icon (a folder icon overlaid with a Google Drive triangle logo).
    - Alternatively, you can create a fresh code cell at the absolute top of your notebook and execute this script command:
-     ```from google.colab import drive
-     drive.mount('/content/drive')```
+     ```from google.colab import drive```
+     ```drive.mount('/content/drive')```
 9. Follow the pop-up permissions prompt window: select your Google account, scroll down, and click Allow.
 
 ### Phase 4: Setting the Active Working Environment
 To ensure the notebook can locate your data sets, images, and modules automatically without crashing, you must point Colab directly into your project directory folder.
+
 10. Create a new code cell, paste the following system line, and execute it:
-```%cd /content/drive/MyDrive/IA-Tutorial-2026```
+    ```%cd /content/drive/MyDrive/IA-Tutorial-2026```
+    
 *🚨 CRITICAL RULE: Do not forget the percentage sign (%)! This is a special Jupyter magic command that permanently changes the directory pathway. Using a exclamation mark (!cd) will change the path only temporarily for that single line and fail.*
+
 11. To double-check and verify that your working directory pathway successfully shifted to your folder, create another code cell and type:
-```%pwd```
-*(Print Working Directory). The output displayed directly below the cell should read exactly:*
-```/content/drive/MyDrive/IA-Tutorial-2026```
+    ```%pwd```
+    *(Print Working Directory). The output displayed directly below the cell should read exactly:*
+    ```/content/drive/MyDrive/IA-Tutorial-2026```
 
 
 📥 **[Download Module 1: Introduction to Machine Learning (PDF)](https://github.com/llinersy/machine-learning-tutorial-for-experiments/raw/main/module1_Intro/Intro_to_Machine_Learning.pdf)**
