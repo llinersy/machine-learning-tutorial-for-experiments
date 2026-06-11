@@ -53,8 +53,11 @@ To ensure the notebook can locate your data sets, images, and modules automatica
 *🚨 CRITICAL RULE: Do not forget the percentage sign (%)! This is a special Jupyter magic command that permanently changes the directory pathway. Using a exclamation mark (!cd) will change the path only temporarily for that single line and fail.*
 
 11. To double-check and verify that your working directory pathway successfully shifted to your folder, create another code cell and type:
+    
     ```%pwd```
+    
     *(Print Working Directory). The output displayed directly below the cell should read exactly:*
+    
     ```/content/drive/MyDrive/IA-Tutorial-2026```
 
 
