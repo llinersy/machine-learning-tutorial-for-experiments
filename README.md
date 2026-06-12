@@ -40,7 +40,9 @@ Once your notebook initializes in the browser, you must grant it access to read 
 7. Look at the left vertical sidebar panel in Colab and click on the Files (Folder icon) tab.
 8. Click the Mount Drive icon (a folder icon overlaid with a Google Drive triangle logo).
    - Alternatively, you can create a fresh code cell at the absolute top of your notebook and execute this script command:
+     
      ```from google.colab import drive```
+     
      ```drive.mount('/content/drive')```
 9. Follow the pop-up permissions prompt window: select your Google account, scroll down, and click Allow.
 
